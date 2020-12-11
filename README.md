@@ -1,4 +1,4 @@
-# Navercafe_Auto_comment-EX v3.2
+# Navercafe_Auto_comment-EX v3.3
 
 ## 개요
 

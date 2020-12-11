@@ -72,13 +72,23 @@ def login():
         getYournickname = driver.execute_script(
             'return document.querySelector("#gnb_name1").innerText')
 
-        # 첫글부터 클릭. 좋아요 눌러져있으면 아래는 이미 다 달았던 글이므로 프로그램 종료
-        for i in range(1, 16):
+        driver.switch_to_frame("cafe_main")
+        # 페이지 게시글 수 확인. 16개 이상이면 답글이 포함되어 있는 것.
+        getNumberofposts = driver.execute_script(
+            'return document.querySelectorAll("#main-area > div:nth-child(6) > table > tbody > tr")')
+        driver.switch_to_default_content()
+# 첫글부터 클릭. 좋아요 눌러져있으면 넘어감
+        for i in range(1, len(getNumberofposts)+1):
             # 본문은 iframe으로 이뤄져있다. 들어가기.
             driver.switch_to_frame("cafe_main")
             # 작성자 확인
-            nickname = driver.execute_script(
-                f'return document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_name > div > table > tbody > tr > td > a").innerText')
+            try:
+                nickname = driver.execute_script(
+                    f'return document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_name > div > table > tbody > tr > td > a").innerText')
+            except:
+                driver.refresh()
+                time.sleep(1)
+                continue
             # passlist와 비교
             if nickname not in passlist:
                 # 게시판 확인
