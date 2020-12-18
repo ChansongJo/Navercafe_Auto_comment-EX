@@ -53,3 +53,6 @@ MembershipBoard = [
 NewsBoard = [
     "특징주/뉴스/공시",
 ]
+reviewBoard = [
+    "강의후기",
+]

@@ -203,9 +203,6 @@ def login():
                     like = driver.execute_script(
                         "return document.querySelector('#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a').getAttribute('aria-pressed')")
                     if like == 'true':
-                        # driver.quit()
-                        # getExit = False
-                        # break
                         driver.refresh()
                         time.sleep(1)
                         continue
@@ -218,6 +215,39 @@ def login():
                         time.sleep(1)
                         driver.execute_script(
                             'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > div > div > div > div > ul > li.active > div > ul > li:nth-child(5) > button").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.register_box > a").click()')
+                        time.sleep(1)
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    # 후기
+                elif board in reviewBoard:
+                    driver.execute_script(
+                        f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
+                    time.sleep(2)
+                    commentOption = driver.execute_script(
+                        'return document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a")')
+                    if commentOption == None:
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    like = driver.execute_script(
+                        "return document.querySelector('#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a').getAttribute('aria-pressed')")
+                    if like == 'true':
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    else:
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a > span").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > div > div > div > div > ul > li.active > div > ul > li:nth-child(15) > button").click()')
                         time.sleep(1)
                         driver.execute_script(
                             'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.register_box > a").click()')
