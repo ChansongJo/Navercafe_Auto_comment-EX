@@ -3,6 +3,8 @@ from selenium.webdriver.common.keys import Keys
 from tkinter import *
 from tkinter import ttk
 from listAll import *
+import sys
+import os
 import time
 import pyperclip
 
@@ -31,8 +33,11 @@ pageEntry.pack()
 
 
 def login():
-    # 네이버 로그인 열기
-    driver = webdriver.Chrome()
+    if getattr(sys, 'frozen', False):
+        chromedriver_path = os.path.join(sys._MEIPASS, "chromedriver.exe")
+        driver = webdriver.Chrome(chromedriver_path)
+    else:
+        driver = webdriver.Chrome()
     driver.get('https://nid.naver.com/nidlogin.login')
 
     # id, pw 입력할 곳을 찾습니다.
@@ -162,9 +167,6 @@ def login():
                         "return document.querySelector('#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a').getAttribute('aria-pressed')")
                     # 좋아요가 눌러져있으면 종료.
                     if like == 'true':
-                        # driver.quit()
-                        # getExit = False
-                        # break
                         driver.refresh()
                         time.sleep(1)
                         continue
