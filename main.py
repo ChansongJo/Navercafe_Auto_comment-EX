@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from tkinter import *
 from tkinter import ttk
 from listAll import *
+from user import *
 import sys
 import os
 import time
@@ -13,33 +14,42 @@ win = Tk()
 win.geometry('200x160')
 win.title('Login')
 
-# ID 입력창
-idLabel = Label(win, text="ID")
-idLabel.pack()
-idEntry = Entry(win)
-idEntry.pack()
+if user_id == None:
+    # ID 입력창
+    idLabel = Label(win, text="ID")
+    idLabel.pack()
+    idEntry = Entry(win)
+    idEntry.pack()
 
-# password 입력
-pwLabel = Label(win, text="Password")
-pwLabel.pack()
-pwEntry = Entry(win, show='*')
-pwEntry.pack()
+    # password 입력
+    pwLabel = Label(win, text="Password")
+    pwLabel.pack()
+    pwEntry = Entry(win, show='*')
+    pwEntry.pack()
 
-# page 입력
-pageLabel = Label(win, text="Pages")
-pageLabel.pack()
-pageEntry = Entry(win)
-pageEntry.pack()
+    # page 입력
+    pageLabel = Label(win, text="Pages")
+    pageLabel.pack()
+    pageEntry = Entry(win)
+    pageEntry.pack()
+else:
+    # page 입력
+    pageLabel = Label(win, text="Pages")
+    pageLabel.pack()
+    pageEntry = Entry(win)
+    pageEntry.pack()
 
 
 def login():
-    if getattr(sys, 'frozen', False):
-        chromedriver_path = os.path.join(sys._MEIPASS, "chromedriver.exe")
-        driver = webdriver.Chrome(chromedriver_path)
-    else:
-        driver = webdriver.Chrome()
+    driver = webdriver.Chrome()
     driver.get('https://nid.naver.com/nidlogin.login')
 
+    if user_id == None:
+        naverid = idEntry.get()
+        naverpw = pwEntry.get()
+    else:
+        naverid = user_id
+        naverpw = user_pw
     # id, pw 입력할 곳을 찾습니다.
     tag_id = driver.find_element_by_name('id')
     tag_pw = driver.find_element_by_name('pw')
@@ -48,13 +58,13 @@ def login():
 
     # id 입력
     tag_id.click()
-    pyperclip.copy(idEntry.get())
+    pyperclip.copy(naverid)
     tag_id.send_keys(Keys.CONTROL, 'v')
     time.sleep(1)
 
     # pw 입력
     tag_pw.click()
-    pyperclip.copy(pwEntry.get())
+    pyperclip.copy(naverpw)
     tag_pw.send_keys(Keys.CONTROL, 'v')
     time.sleep(1)
 
@@ -82,7 +92,7 @@ def login():
         getNumberofposts = driver.execute_script(
             'return document.querySelectorAll("#main-area > div:nth-child(6) > table > tbody > tr")')
         driver.switch_to_default_content()
-# 첫글부터 클릭. 좋아요 눌러져있으면 넘어감
+        # 첫글부터 클릭. 좋아요 눌러져있으면 넘어감
         for i in range(1, len(getNumberofposts)+1):
             # 본문은 iframe으로 이뤄져있다. 들어가기.
             driver.switch_to_frame("cafe_main")
@@ -191,7 +201,7 @@ def login():
                         driver.refresh()
                         time.sleep(1)
                         continue
-                # 뉴스
+                # 뉴스, 테마주 정리
                 elif board in NewsBoard:
                     driver.execute_script(
                         f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
@@ -250,6 +260,70 @@ def login():
                         time.sleep(1)
                         driver.execute_script(
                             'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > div > div > div > div > ul > li.active > div > ul > li:nth-child(15) > button").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.register_box > a").click()')
+                        time.sleep(1)
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                elif board in workBoard and nickname in officeID:
+                    driver.execute_script(
+                        f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
+                    time.sleep(2)
+                    commentOption = driver.execute_script(
+                        'return document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a")')
+                    if commentOption == None:
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    like = driver.execute_script(
+                        "return document.querySelector('#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a').getAttribute('aria-pressed')")
+                    if like == 'true':
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    else:
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a > span").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > div > div > div > div > ul > li.active > div > ul > li:nth-child(5) > button").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.register_box > a").click()')
+                        time.sleep(1)
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                elif board in eventBoard:
+                    driver.execute_script(
+                        f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
+                    time.sleep(2)
+                    commentOption = driver.execute_script(
+                        'return document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a")')
+                    if commentOption == None:
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    like = driver.execute_script(
+                        "return document.querySelector('#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a').getAttribute('aria-pressed')")
+                    if like == 'true':
+                        driver.refresh()
+                        time.sleep(1)
+                        continue
+                    else:
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.ReplyBox > div.box_left > div > div > a > span").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > a").click()')
+                        time.sleep(1)
+                        driver.execute_script(
+                            'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.attach_box > div > div > div > div > ul > li.active > div > ul > li:nth-child(23) > button").click()')
                         time.sleep(1)
                         driver.execute_script(
                             'document.querySelector("#app > div > div > div.ArticleContentBox > div.article_container > div.CommentBox > div.CommentWriter > div.comment_attach > div.register_box > a").click()')
