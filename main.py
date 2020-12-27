@@ -76,8 +76,6 @@ def login():
     # 그렇지 않으면 로그인 끝나기도 전에 다음 명령어가 실행되어 제대로 작동하지 않는다.
     time.sleep(3)
 
-    # 이중 for문 break를 위한 변수 할당
-    # getExit = True
     # 전체게시판 게시글 페이지 1번부터 확인(1페이지에 15개씩 default는 총 195개까지)
     for j in range(1, int(pageEntry.get())+1):
         driver.get(
@@ -234,7 +232,7 @@ def login():
                         driver.refresh()
                         time.sleep(1)
                         continue
-                    # 후기
+                # 후기
                 elif board in reviewBoard:
                     driver.execute_script(
                         f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
@@ -267,6 +265,7 @@ def login():
                         driver.refresh()
                         time.sleep(1)
                         continue
+                # 작업 아이디
                 elif board in workBoard and nickname in officeID:
                     driver.execute_script(
                         f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
@@ -299,6 +298,7 @@ def login():
                         driver.refresh()
                         time.sleep(1)
                         continue
+                # 이벤트 게시판
                 elif board in eventBoard:
                     driver.execute_script(
                         f'document.querySelector("#main-area > div:nth-child(6) > table > tbody > tr:nth-child({i}) > td.td_article > div.board-list > div > a").click()')
